@@ -1,0 +1,35 @@
+[
+  {
+    "id": "hs_001",
+    "product_id": "prod_002",
+    "product_name": "Flax Seeds",
+    "sale_price": 400,
+    "regular_price": 400,
+    "description": "Full of ALA (Alpha-linolenic Acid), Flax seeds are going for only KES 400 for a pack of 250 gms. Make your order today.",
+    "weight": "250 gms",
+    "promo_tag": "HOT SALE",
+    "valid_until": null
+  },
+  {
+    "id": "hs_002",
+    "product_id": "prod_001",
+    "product_name": "Chia Seeds",
+    "sale_price": 400,
+    "regular_price": 400,
+    "description": "Known as one of the 'Superfoods' seeds in the seed kingdom, Chia seeds really deserve their reputation. For only KES 400, get your superfood seeds.",
+    "weight": "250 gms",
+    "promo_tag": "HOT SALE",
+    "valid_until": null
+  },
+  {
+    "id": "hs_003",
+    "product_id": "prod_034",
+    "product_name": "Hibiscus Petals",
+    "sale_price": 600,
+    "regular_price": 600,
+    "description": "Whether Hot to chase the cold, or cold to keep you cool, grab the offer and get 500 gms of Hibiscus petals for 600 bob only.",
+    "weight": "500 gms",
+    "promo_tag": "HOT SALE",
+    "valid_until": null
+  }
+]
