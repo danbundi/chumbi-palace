@@ -14,7 +14,6 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('default');
   const [viewMode, setViewMode] = useState('grid');
-  const [priceRange, setPriceRange] = useState([0, 5000]);
 
   useEffect(() => {
     setLoading(true);
@@ -116,34 +115,6 @@ const CategoryPage = () => {
                   <option value="price-high">Price (High to Low)</option>
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
-          </div>
-
-          {/* Price Range Filter */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <h3 className="font-semibold text-gray-700 mb-3">Price Range (KES)</h3>
-            <div className="flex items-center space-x-4">
-              <input
-                type="range"
-                min="0"
-                max="5000"
-                step="100"
-                value={priceRange[0]}
-                onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                className="flex-1"
-              />
-              <input
-                type="range"
-                min="0"
-                max="5000"
-                step="100"
-                value={priceRange[1]}
-                onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                className="flex-1"
-              />
-              <div className="text-sm text-gray-600 min-w-[100px]">
-                {priceRange[0]} - {priceRange[1]} KES
               </div>
             </div>
           </div>
