@@ -1,17 +1,30 @@
 import mongoose from "mongoose";
 
-const transactionSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
-    amount: { type: Number, required: true },
-    status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
-    phoneNumber: { type: String, required: true},
-    checkoutRequestId: { type: String, required: true },
-    merchantRequestId: { type: String, required: true },
-    mpesaReceiptNumber: { type: String },
-    rawCallback: { type: Object},
-},
-{timestamps: true})
+const transactionSchema = new mongoose.Schema(
+  {
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+      required: true,
+    },
 
-const Transaction = mongoose.model("Transaction", transactionSchema);
+    phoneNumber: String,
+    amount: Number,
 
-export default Transaction;
+    checkoutRequestId: String,
+    merchantRequestID: String,
+
+    mpesaReceipt: String,
+
+    status: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+
+    resultDesc: String,
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Transaction", transactionSchema);

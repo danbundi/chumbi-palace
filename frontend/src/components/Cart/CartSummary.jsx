@@ -70,7 +70,7 @@ const CartSummary = ({ cart, total, onCheckout }) => {
         <div className="flex justify-between items-center mb-8">
           <span className="text-xl font-bold text-gray-900">Order Total</span>
           <div className="text-right">
-            <div className="text-3xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-green-600">
               {formatPrice(orderTotal)} KES
             </div>
             <div className="text-sm text-gray-500">

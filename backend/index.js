@@ -1,6 +1,9 @@
 import express from 'express';
 import router from './src/routes/mpesa.routes.js';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

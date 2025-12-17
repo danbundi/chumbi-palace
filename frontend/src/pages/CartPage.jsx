@@ -8,6 +8,7 @@ import { useCart } from '../contexts/CartContext';
 
 const CartPage = () => {
   const { cart, getCartTotal, clearCart } = useCart();
+  const totalPrice = getCartTotal();
   const navigate = useNavigate();
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
@@ -15,14 +16,138 @@ const CartPage = () => {
     setIsCheckoutModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsCheckoutModalOpen(false);
+  // Add these state variables at the top of your component
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // M-Pesa Payment Handler
+  const handleMpesaPayment = async () => {
+    setIsProcessing(true);
+    
+    try {
+      // Step 1: Prepare order data from cart
+      const orderData = {
+        items: cart.map(item => ({
+          productId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          // Add any other product details you need
+        })),
+        totalAmount: totalPrice,
+        customerPhone: phoneNumber.replace(/\D/g, ''), // Remove non-digits
+        status: 'pending'
+      };
+
+      // Step 2: Save order to database
+      const orderResponse = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create order');
+      }
+
+      const orderResult = await orderResponse.json();
+      const orderId = orderResult.order._id;
+
+      // Step 3: Prepare M-Pesa payment data
+      const paymentData = {
+        phone: formatPhoneNumber(phoneNumber),
+        amount: totalAmount,
+        orderId: orderId
+      };
+
+      // Step 4: Initiate M-Pesa STK Push
+      const paymentResponse = await fetch('http://localhost:5000/api/mpesa/stk-push', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData)
+      });
+
+      if (!paymentResponse.ok) {
+        throw new Error('Failed to initiate M-Pesa payment');
+      }
+
+      const paymentResult = await paymentResponse.json();
+      
+      // Step 5: Start polling for payment status
+      if (paymentResult.CheckoutRequestID) {
+        startPaymentPolling(paymentResult.CheckoutRequestID, orderId);
+      } else {
+        throw new Error('No CheckoutRequestID received');
+      }
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert(`Payment failed: ${error.message}`);
+      setIsProcessing(false);
+    }
   };
 
-  const handleProceedToPayment = () => {
-    // This will be implemented with M-Pesa API
-    console.log('Proceeding to M-Pesa payment...');
-    // navigate('/checkout');
+  // Helper function to format phone number
+  const formatPhoneNumber = (phone) => {
+    let cleanPhone = phone.replace(/\D/g, '');
+    
+    // Format to 254...
+    if (cleanPhone.startsWith('0')) {
+      return '254' + cleanPhone.substring(1);
+    } else if (cleanPhone.startsWith('7')) {
+      return '254' + cleanPhone;
+    }
+    
+    return cleanPhone;
+  };
+
+  // Function to poll for payment status
+  const startPaymentPolling = (checkoutRequestID, orderId) => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const statusResponse = await fetch(
+          `http://localhost:5000/api/mpesa/status/${checkoutRequestID}`
+        );
+        
+        const statusData = await statusResponse.json();
+        
+        if (statusData.status === 'success') {
+          clearInterval(pollInterval);
+          setIsProcessing(false);
+          handleCloseModal();
+          alert('Payment successful! Your order has been placed.');
+          // Clear cart or redirect to success page
+        } else if (statusData.status === 'failed') {
+          clearInterval(pollInterval);
+          setIsProcessing(false);
+          alert('Payment failed. Please try again.');
+        }
+        // Continue polling if status is 'pending'
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 3000); // Poll every 3 seconds
+
+    // Stop polling after 2 minutes
+    setTimeout(() => {
+      clearInterval(pollInterval);
+      if (isProcessing) {
+        setIsProcessing(false);
+        alert('Payment timeout. Please check your phone and try again.');
+      }
+    }, 120000);
+  };
+
+  // Function to close modal
+  const handleCloseModal = () => {
+    if (!isProcessing) {
+      setIsCheckoutModalOpen(false);
+      setPhoneNumber('');
+    }
   };
 
   if (cart.length === 0) {
@@ -126,106 +251,122 @@ const CartPage = () => {
       {/* Checkout Modal */}
       {isCheckoutModalOpen && (
         <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity"
-            onClick={handleCloseModal}
-          />
+    {/* Overlay */}
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity"
+      onClick={handleCloseModal}
+    />
 
-          {/* Modal */}
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
-              <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md">
-                {/* Header */}
-                <div className="p-6 border-b">
-                  <h3 className="text-xl font-bold text-gray-900">Choose Payment Method</h3>
-                  <p className="text-gray-600 text-sm mt-1">Select how you'd like to pay</p>
-                </div>
-
-                {/* Payment Options */}
-                <div className="p-6">
-                  <div className="space-y-4">
-                    {/* M-Pesa Option */}
-                    <button
-                      onClick={handleProceedToPayment}
-                      className="w-full p-4 border-2 border-green-500 rounded-xl hover:bg-green-50 transition-colors text-left"
-                    >
-                      <div className="flex items-center">
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                          <div className="text-2xl">📱</div>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-gray-900">Pay with M-Pesa</div>
-                          <div className="text-sm text-gray-600">Instant mobile money payment</div>
-                        </div>
-                      </div>
-                    </button>
-
-                    {/* Card Payment Option (Coming Soon) */}
-                    <button
-                      disabled
-                      className="w-full p-4 border-2 border-gray-300 rounded-xl opacity-50 cursor-not-allowed text-left"
-                    >
-                      <div className="flex items-center">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
-                          <div className="text-2xl">💳</div>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-gray-900">Credit/Debit Card</div>
-                          <div className="text-sm text-gray-600">Coming soon</div>
-                        </div>
-                      </div>
-                    </button>
-
-                    {/* Cash on Delivery Option */}
-                    <button
-                      disabled
-                      className="w-full p-4 border-2 border-gray-300 rounded-xl opacity-50 cursor-not-allowed text-left"
-                    >
-                      <div className="flex items-center">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
-                          <div className="text-2xl">💰</div>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-gray-900">Cash on Delivery</div>
-                          <div className="text-sm text-gray-600">Coming soon</div>
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Instructions */}
-                  <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-                    <h4 className="font-semibold text-gray-900 mb-2">📝 M-Pesa Payment Instructions:</h4>
-                    <ol className="text-sm text-gray-600 space-y-1">
-                      <li>1. You'll receive a payment prompt on your phone</li>
-                      <li>2. Enter your M-Pesa PIN when prompted</li>
-                      <li>3. Confirm the transaction amount</li>
-                      <li>4. You'll receive a confirmation message</li>
-                    </ol>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="p-6 border-t flex justify-between">
-                  <button
-                    onClick={handleCloseModal}
-                    className="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleProceedToPayment}
-                    className="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Proceed with M-Pesa
-                  </button>
-                </div>
+    {/* Modal */}
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md">
+          {/* Header */}
+          <div className="p-6 border-b">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Pay with M-Pesa</h3>
+                <p className="text-gray-600 text-sm mt-1">Enter your M-Pesa details</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📱</span>
               </div>
             </div>
           </div>
-        </>
-      )}
+
+          {/* Payment Form */}
+          <div className="p-6">
+            {/* Amount Display */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-xl">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Total Amount:</span>
+                <span className="text-2xl font-bold text-green-600">
+                  KSh {totalPrice.toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            {/* Phone Input */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                M-Pesa Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="0712 345 678"
+                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition-colors"
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Enter your M-Pesa registered phone number
+              </p>
+            </div>
+
+            {/* Order Summary */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-gray-900 mb-3">Order Summary</h4>
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {cart.map((item) => (
+                  <div key={item.id} className="flex justify-between text-sm">
+                    <span className="text-gray-600">
+                      {item.name} × {item.quantity}
+                    </span>
+                    <span className="font-medium">
+                      KSh {(item.price * item.quantity).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Instructions */}
+            <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-100">
+              <h4 className="font-semibold text-gray-900 mb-2 text-sm">📝 Payment Instructions:</h4>
+              <ol className="text-xs text-gray-600 space-y-1">
+                <li>1. Enter your M-Pesa registered phone number</li>
+                <li>2. Click "Pay Now" to initiate payment</li>
+                <li>3. You'll receive a payment prompt on your phone</li>
+                <li>4. Enter your M-Pesa PIN when prompted</li>
+                <li>5. Wait for confirmation</li>
+              </ol>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="p-6 border-t flex justify-between items-center">
+            <button
+              onClick={handleCloseModal}
+              className="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+              disabled={isProcessing}
+            >
+              Cancel
+            </button>
+            
+            <button
+              onClick={handleMpesaPayment}
+              disabled={isProcessing || !phoneNumber.trim()}
+              className="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            >
+              {isProcessing ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </>
+              ) : (
+                'Pay Now'
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </>
+)}
     </div>
   );
 };
