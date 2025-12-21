@@ -12,10 +12,11 @@ import {
 } from 'lucide-react';
 import ProductGrid from '../components/Product/ProductGrid';
 import { useProducts } from '../contexts/ProductContext';
-import hotSaleData from '../data/hotSale.json';
+import { useHotSales } from '../contexts/HotSaleContext';
 
 const HomePage = () => {
   const { products, categories, loading } = useProducts();
+  const { hotSales } = useHotSales();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [hotSaleProducts, setHotSaleProducts] = useState([]);
 
@@ -26,9 +27,9 @@ const HomePage = () => {
       setFeaturedProducts(shuffled.slice(0, 8));
       
       // Get hot sale products
-      const hotSaleIds = hotSaleData.map(item => item.product_id);
-      const hotSaleItems = products.filter(product => 
-        hotSaleIds.includes(product.id)
+      const hotSaleIds = hotSales.map(item => item.product_id);
+      const hotSaleItems = products.filter(product =>
+        hotSaleIds.includes(product._id || product.id)
       );
       setHotSaleProducts(hotSaleItems.slice(0, 4));
     }
@@ -64,7 +65,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-green-50 to-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
+  <section className="bg-linear-to-r from-green-50 to-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -99,7 +100,7 @@ const HomePage = () => {
             
             {/* Hero Image Placeholder */}
             <div className="bg-white rounded-2xl shadow-xl p-8">
-              <div className="aspect-square rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center">
+              <div className="aspect-square rounded-xl bg-linear-to-br from-green-100 to-emerald-100 flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-8xl mb-4">🌱</div>
                   <p className="text-gray-700 font-semibold text-xl">Chumbi Palace</p>
@@ -160,7 +161,7 @@ const HomePage = () => {
                     </h3>
                     <ChevronRight className="text-green-600 transform group-hover:translate-x-2 transition-transform" />
                   </div>
-                  <div className="h-32 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg flex items-center justify-center">
+                  <div className="h-32 bg-linear-to-r from-green-50 to-emerald-50 rounded-lg flex items-center justify-center">
                     <div className="text-4xl">
                       {category.includes('Seeds') ? '🌱' : 
                        category.includes('Spices') ? '🌶️' : 
@@ -179,7 +180,7 @@ const HomePage = () => {
 
       {/* Hot Sale Section */}
       {hotSaleProducts.length > 0 && (
-        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-red-50 to-orange-50">
+  <section className="py-12 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-red-50 to-orange-50">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center mb-8">
               <div className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center mr-4">
@@ -198,7 +199,7 @@ const HomePage = () => {
               <div className="text-center mt-8">
                 <Link
                   to="/hot-sale"
-                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                  className="inline-flex items-center px-6 py-3 bg-linear-to-r from-red-500 to-orange-500 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
                 >
                   🔥 View All Hot Deals
                   <ChevronRight size={20} className="ml-2" />
@@ -235,7 +236,7 @@ const HomePage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-green-600 to-emerald-600">
+  <section className="py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-green-600 to-emerald-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to Experience Nature's Best?

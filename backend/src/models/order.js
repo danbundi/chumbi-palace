@@ -1,27 +1,33 @@
 import mongoose from "mongoose";
 
 const orderItemSchema = new mongoose.Schema({
-  productId: {
+  itemId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
     required: true,
   },
 
-  productName: String,
-  category: String,
+  // Snapshot (never changes even if product changes)
+  name: String,
   image: String,
 
-  // 🔹 VARIANT SNAPSHOT
   variant: {
-    name: String,      // Small Pack
-    weight: String,    // 0.25 kg
-    sku: String,       // CHIA-SM
+    name: String,
+    weight: String,
     price: Number,
+    sku: String,
   },
 
-  quantity: Number,
-  subtotal: Number,
+  quantity: {
+    type: Number,
+    required: true,
+  },
+
+  subtotal: {
+    type: Number,
+    required: true,
+  },
 });
+
 
 const orderSchema = new mongoose.Schema(
   {

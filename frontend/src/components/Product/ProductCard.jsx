@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <Link to={`/product/${product.id}`}>
+  <Link to={`/product/${product._id}`}>
         <div className="relative h-48 bg-gray-200">
           {/* Product Image - replace with actual images */}
           <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-lg">

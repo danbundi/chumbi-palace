@@ -33,7 +33,7 @@ const CartItem = ({ item }) => {
     <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
       <div className="flex flex-col md:flex-row md:items-center gap-6">
         {/* Product Image */}
-        <div className="flex-shrink-0">
+  <div className="shrink-0">
           {product.image ? (
             <img 
               src={product.image} 
@@ -41,7 +41,7 @@ const CartItem = ({ item }) => {
               className="w-24 h-24 rounded-lg object-cover border border-gray-200"
             />
           ) : (
-            <div className="w-24 h-24 bg-gradient-to-br from-green-50 to-emerald-100 rounded-lg flex items-center justify-center border border-gray-200">
+              <div className="w-24 h-24 bg-linear-to-br from-green-50 to-emerald-100 rounded-lg flex items-center justify-center border border-gray-200">
               <div className="text-3xl">🌱</div>
             </div>
           )}

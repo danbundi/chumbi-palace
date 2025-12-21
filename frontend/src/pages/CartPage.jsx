@@ -28,19 +28,29 @@ const CartPage = () => {
       // Step 1: Prepare order data from cart
       const orderData = {
         items: cart.map(item => ({
-          productId: item.id,
-          name: item.name,
+          // send canonical product id expected by backend
+          productId: item.productId || item.itemId,
+          productName: item.productName || item.name,
+          category: item.category || [],  // optional snapshot
+          image: item.image,
+          variant: {
+            name: item.variant?.name,
+            weight: item.variant?.weight,
+            sku: item.variant?.sku,
+            price: item.variant?.price,
+          },
           quantity: item.quantity,
-          price: item.price,
-          // Add any other product details you need
+          subtotal: item.price * item.quantity,
         })),
-        totalAmount: totalPrice,
-        customerPhone: phoneNumber.replace(/\D/g, ''), // Remove non-digits
-        status: 'pending'
+        totalAmount: cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        ),
+        status: 'pending',
       };
 
       // Step 2: Save order to database
-      const orderResponse = await fetch('http://localhost:5000/api/orders', {
+      const orderResponse = await fetch('http://localhost:5000/api/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,12 +63,13 @@ const CartPage = () => {
       }
 
       const orderResult = await orderResponse.json();
-      const orderId = orderResult.order._id;
+      console.log('Order created:', orderResult);
+      const orderId = orderResult._id;
 
       // Step 3: Prepare M-Pesa payment data
       const paymentData = {
-        phone: formatPhoneNumber(phoneNumber),
-        amount: totalAmount,
+        phoneNumber: formatPhoneNumber(phoneNumber),
+        amount: orderResult.totalAmount,
         orderId: orderId
       };
 
@@ -76,10 +87,11 @@ const CartPage = () => {
       }
 
       const paymentResult = await paymentResponse.json();
+      console.log('Payment response received', paymentResult);
       
       // Step 5: Start polling for payment status
-      if (paymentResult.CheckoutRequestID) {
-        startPaymentPolling(paymentResult.CheckoutRequestID, orderId);
+      if (paymentResult.checkoutRequestID) {
+        startPaymentPolling(paymentResult.checkoutRequestID, orderId);
       } else {
         throw new Error('No CheckoutRequestID received');
       }
@@ -102,45 +114,41 @@ const CartPage = () => {
       return '254' + cleanPhone;
     }
     
+    console.log(`${cleanPhone}`)
     return cleanPhone;
   };
 
   // Function to poll for payment status
   const startPaymentPolling = (checkoutRequestID, orderId) => {
-    const pollInterval = setInterval(async () => {
-      try {
-        const statusResponse = await fetch(
-          `http://localhost:5000/api/mpesa/status/${checkoutRequestID}`
-        );
-        
-        const statusData = await statusResponse.json();
-        
-        if (statusData.status === 'success') {
-          clearInterval(pollInterval);
-          setIsProcessing(false);
-          handleCloseModal();
-          alert('Payment successful! Your order has been placed.');
-          // Clear cart or redirect to success page
-        } else if (statusData.status === 'failed') {
-          clearInterval(pollInterval);
-          setIsProcessing(false);
-          alert('Payment failed. Please try again.');
-        }
-        // Continue polling if status is 'pending'
-      } catch (error) {
-        console.error('Polling error:', error);
-      }
-    }, 3000); // Poll every 3 seconds
+  const interval = setInterval(async () => {
+    try {
+      checkoutRequestID.trim()
+      const response = await fetch(
+        `http://localhost:5000/api/mpesa/status/${checkoutRequestID}`
+      );
 
-    // Stop polling after 2 minutes
-    setTimeout(() => {
-      clearInterval(pollInterval);
-      if (isProcessing) {
-        setIsProcessing(false);
-        alert('Payment timeout. Please check your phone and try again.');
+      const data = await response.json();
+
+      // Check if Safaricom returned a ResultCode (payment completed/failed)
+      if (data.ResultCode !== undefined) {
+        clearInterval(interval); // Stop polling
+
+        if (data.ResultCode === 0) {
+          console.log("Payment successful!", data);
+          // Optional: update order status in DB
+        } else {
+          console.log("Payment failed or cancelled", data);
+        }
+      } else {
+        console.log("Payment pending...", data);
       }
-    }, 120000);
-  };
+    } catch (err) {
+      console.error("Polling error:", err);
+      clearInterval(interval); // Stop polling on fetch error
+    }
+  }, 15000); // poll every 15 seconds
+};
+
 
   // Function to close modal
   const handleCloseModal = () => {
@@ -226,7 +234,7 @@ const CartPage = () => {
             </div>
 
             {/* Cart Tips */}
-            <div className="mt-8 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6">
+            <div className="mt-8 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 mb-3">✨ Shopping Tips</h3>
               <ul className="space-y-2 text-gray-600">
                 <li>• Orders over 2,000 KES qualify for FREE shipping</li>
@@ -311,7 +319,7 @@ const CartPage = () => {
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      {item.name} × {item.quantity}
+                      {(item.productName || item.name)} × {item.quantity}
                     </span>
                     <span className="font-medium">
                       KSh {(item.price * item.quantity).toLocaleString()}

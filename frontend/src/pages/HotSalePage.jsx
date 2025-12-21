@@ -3,31 +3,30 @@ import { Link } from 'react-router-dom';
 import { Flame, Clock, Tag, AlertCircle } from 'lucide-react';
 import Breadcrumbs from '../components/Layout/Breadcrumbs';
 import ProductGrid from '../components/Product/ProductGrid';
-import { useProducts } from '../contexts/ProductContext';
-import hotSaleData from '../data/hotSale.json';
+import { useHotSales } from '../contexts/HotSaleContext';
 
 const HotSalePage = () => {
-  const { products, loading } = useProducts();
+  const { products, loading } = useHotSales();
   const [hotSaleProducts, setHotSaleProducts] = useState([]);
 
   useEffect(() => {
-    if (products.length > 0) {
+    if (products) {
       const hotSaleIds = hotSaleData.map(item => item.product_id);
       const hotSaleItems = products.filter(product => 
-        hotSaleIds.includes(product.id)
+        hotSaleIds.includes(product._id || product.id)
       );
       setHotSaleProducts(hotSaleItems);
     }
   }, [products]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
+  <div className="min-h-screen bg-linear-to-b from-red-50 to-white">
       <Breadcrumbs />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-3 bg-gradient-to-r from-red-500 to-orange-500 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center p-3 bg-linear-to-r from-red-500 to-orange-500 rounded-full mb-4">
             <Flame size={32} className="text-white" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -46,7 +45,7 @@ const HotSalePage = () => {
         </div>
 
         {/* Alert Banner */}
-        <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-6 mb-8 text-white">
+  <div className="bg-linear-to-r from-red-500 to-orange-500 rounded-2xl p-6 mb-8 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <AlertCircle size={24} className="mr-3" />

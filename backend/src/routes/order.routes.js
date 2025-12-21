@@ -1,9 +1,9 @@
 import express from "express";
-import Order from "../models/Order.js";
+import Order from "../models/order.js";
 
-const router = express.Router();
+const orderRouter = express.Router();
 
-router.post("/create", async (req, res) => {
+orderRouter.post("/create", async (req, res) => {
   try {
     const { items } = req.body;
 
@@ -18,7 +18,7 @@ router.post("/create", async (req, res) => {
       totalAmount += subtotal;
 
       return {
-        productId: item.productId, // JSON ID
+        itemId: item.productId, // JSON ID
         productName: item.productName,
         category: item.category,
         image: item.image,
@@ -49,4 +49,4 @@ router.post("/create", async (req, res) => {
   }
 });
 
-export default router;
+export default orderRouter;

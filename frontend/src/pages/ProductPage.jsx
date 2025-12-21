@@ -206,9 +206,9 @@ const ProductPage = () => {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <RelatedProducts 
-            products={relatedProducts} 
-            currentProductId={product.id}
-          />
+              products={relatedProducts} 
+              currentProductId={product._id}
+            />
         )}
       </div>
     </div>

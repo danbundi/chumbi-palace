@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import productsData from '../data/products.json';
 
 const ProductContext = createContext();
 
@@ -18,36 +17,49 @@ export const ProductProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
-    setProducts(productsData);
-    
-    const uniqueCategories = ['all', ...new Set(
-      productsData.flatMap(product => product.category)
-    )];
-    setCategories(uniqueCategories);
-    
-    setLoading(false);
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/products'); // backend endpoint
+        const data = await res.json();
+
+        // Normalize products to ensure a Mongo-style `_id` exists.
+        // Some fixtures or older data may use `id` instead of `_id`.
+        const normalized = data.map(p => ({ ...p, _id: p._id || p.id }));
+
+        setProducts(normalized);
+
+        // Get unique categories (guard against missing category arrays)
+        const uniqueCategories = ['all', ...new Set(
+          normalized.flatMap(product => product.category || [])
+        )];
+        setCategories(uniqueCategories);
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const getProductById = (id) => {
-    return products.find(product => product.id === id);
+    return products.find(product => product._id === id);
   };
 
   const getProductsByCategory = (category) => {
     if (category === 'all') return products;
-    return products.filter(product => 
+    return products.filter(product =>
       product.category.includes(category)
     );
   };
 
   const getRelatedProducts = (currentProduct, limit = 4) => {
     if (!currentProduct) return [];
-    
     return products
-      .filter(product => 
-        product.id !== currentProduct.id && 
-        product.category.some(cat => 
-          currentProduct.category.includes(cat)
-        )
+      .filter(product =>
+        product._id !== currentProduct._id &&
+        product.category.some(cat => currentProduct.category.includes(cat))
       )
       .slice(0, limit);
   };

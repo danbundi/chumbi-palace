@@ -1,63 +1,107 @@
 import axios from "axios";
-import Transaction from "../models/transaction.js";
+import dayjs from "dayjs";
 import { getMpesaToken } from "../config/mpesa.js";
-import { generatePassword } from "../utils/generatePassword.js";
 
-const stkPush = async (req, res) => {
+export const getPaymentStatus = async (req, res) => {
+  const { checkoutRequestID } = req.params;
+  checkoutRequestID.trim()
+  console.log(checkoutRequestID)
+
+  if (!checkoutRequestID) {
+    return res.status(400).json({ error: "CheckoutRequestID is required" });
+  }
+
+  const timestamp = dayjs().format("YYYYMMDDHHmmss");
+
+  const password = Buffer.from(
+    `174379${process.env.MPESA_PASSKEY}${timestamp}`
+  ).toString("base64");
+
+  const payload = {
+    BusinessShortCode: 174379,
+    Password: password,
+    Timestamp: timestamp,
+    CheckoutRequestID: checkoutRequestID
+  };
+
   try {
-    let { phoneNumber, amount } = req.body;
+    const accessToken = await getMpesaToken();
 
-    if (!phoneNumber || !amount) {
-      return res.status(400).json({ message: "Phone and amount required!" });
-    }
+    const response = await axios.post(
+      "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query",
+      payload,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
 
-    const formattedPhone = phoneNumber.startsWith("254")
-      ? phoneNumber
-      : phoneNumber.replace(/^0/, "254");
+    return res.json(response.data);
+  } catch (err) {
+    console.error("Payment status error:", err.response?.data || err.message);
+    return res.status(500).json({ error: "Failed to get payment status" });
+  }
+};
 
-    const token = await getMpesaToken();
-    console.log("ACCESS TOKEN:", token);
-    const { password, timestamp } = generatePassword();
+
+export const stkPush = async (req, res) => {
+  try {
+    const { phoneNumber, amount } = req.body;
+
+    console.log("STK PUSH BODY:", { phoneNumber, amount });
+
+    const accessToken = await getMpesaToken();
+    console.log("ACCESS TOKEN:", accessToken);
+
+    const timestamp = dayjs().format("YYYYMMDDHHmmss");
+
+    const password = Buffer.from(
+      `174379${process.env.MPESA_PASSKEY}${timestamp}`
+    ).toString("base64");
+
+    const payload = {
+      BusinessShortCode: 174379,
+      Password: password,
+      Timestamp: timestamp,
+      TransactionType: "CustomerPayBillOnline",
+      Amount: amount,
+      PartyA: phoneNumber,
+      PartyB: 174379,
+      PhoneNumber: phoneNumber,
+      CallBackURL: "https://example.com/mpesa-callback", // TEMP
+      AccountReference: "TestOrder",
+      TransactionDesc: "Test STK Push",
+    };
+
+    console.log("STK PAYLOAD:", payload);
 
     const response = await axios.post(
       "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-      {
-        BusinessShortCode: process.env.MPESA_SHORTCODE,
-        Password: password,
-        Timestamp: timestamp,
-        TransactionType: "CustomerPayBillOnline",
-        Amount: amount,
-        PartyA: formattedPhone,
-        PartyB: process.env.MPESA_SHORTCODE,
-        PhoneNumber: formattedPhone,
-        CallBackURL: `${process.env.MPESA_CALLBACK_URL}/api/mpesa/callback`,
-        AccountReference: "OrderPayment",
-        TransactionDesc: "E-commerce payment",
-      },
+      payload,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
 
-    await Transaction.create({
-      phoneNumber: formattedPhone,
-      amount,
-      checkoutRequestId: response.data.CheckoutRequestID,
-      merchantRequestId: response.data.MerchantRequestID,
-      status: "pending",
+    console.log("SAFARICOM RESPONSE:", response.data);
+
+    return res.status(200).json({
+      success: true,
+      checkoutRequestID: response.data.CheckoutRequestID,
+      merchantRequestID: response.data.MerchantRequestID,
+      customerMessage: response.data.CustomerMessage,
+      raw: response.data,
     });
-    
-    res.json({
-      message: "STK push sent",
-      response: response.data,
-    });
+
   } catch (error) {
-    console.log("STK Push Error:", error.response?.data || error.message);
-    res.status(500).json({ message: "Failed to initiate STK Push" });
+    console.error(
+      "STK PUSH ERROR:",
+      error.response?.data || error.message
+    );
+
+    return res.status(400).json({
+      success: false,
+      error: "STK Push failed",
+      details: error.response?.data || error.message,
+    });
   }
 };
-
-export { stkPush };

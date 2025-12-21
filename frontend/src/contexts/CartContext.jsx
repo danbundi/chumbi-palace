@@ -18,9 +18,10 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product, variant, quantity = 1) => {
     setCart(prevCart => {
+      // Match by canonical productId (Mongo `_id`) and variant name
       const existingItem = prevCart.find(item => 
-        item.productId === product.id && 
-        item.variantName === variant.name
+        item.productId === product._id && 
+        item.variant?.name === variant.name
       );
 
       if (existingItem) {
@@ -31,20 +32,29 @@ export const CartProvider = ({ children }) => {
         );
       } else {
         const newItem = {
-          id: `${product.id}-${variant.name}`,
-          productId: product.id,
+          // cart-row id (unique per product+variant)
+          id: `${product._id}-${variant.name}`,
+          // canonical product identifier (from backend)
+          productId: product._id,
+          // keep itemId for backward-compat if other code relies on it
+          itemId: product._id,
           productName: product.name,
+          name: product.name,
+          category: product.category || [],
+          image: product.image || '/placeholder.jpg',
+          variant: variant,
           variantName: variant.name,
-          price: variant.price,
           weight: variant.weight,
           sku: variant.sku,
-          quantity,
-          image: product.image || '/placeholder.jpg'
+          price: variant.price,
+          quantity
         };
+
         return [...prevCart, newItem];
       }
     });
-  };
+};
+
 
   const removeFromCart = (itemId) => {
     setCart(prevCart => prevCart.filter(item => item.id !== itemId));

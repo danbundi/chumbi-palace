@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ProductProvider } from './contexts/ProductContext';
+import { HotSaleProvider } from './contexts/HotSaleContext';
 import { CartProvider } from './contexts/CartContext';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
@@ -16,22 +17,24 @@ function App() {
   return (
     <Router>
       <ProductProvider>
-        <CartProvider>
-          <ScrollToTop/>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="grow">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/category/:category" element={<CategoryPage />} />
-                <Route path="/hot-sale" element={<HotSalePage />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </CartProvider>
+        <HotSaleProvider>
+          <CartProvider>
+            <ScrollToTop/>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="grow">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/product/:id" element={<ProductPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/category/:category" element={<CategoryPage />} />
+                  <Route path="/hot-sale" element={<HotSalePage />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </CartProvider>
+        </HotSaleProvider>
       </ProductProvider>
     </Router>
   );

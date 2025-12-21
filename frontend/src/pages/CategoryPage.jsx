@@ -16,24 +16,38 @@ const CategoryPage = () => {
   const [viewMode, setViewMode] = useState('grid');
 
   useEffect(() => {
+    if (!category) return;
+    if (categories.length === 0) return;
+
     setLoading(true);
-    
-    // Check if category exists
-    const categoryExists = categories.includes(category.replace(/-/g, ' ')) || category === 'all';
-    
-    if (!categoryExists && categories.length > 0) {
+
+    const normalizedCategory =
+      category === 'all' ? 'all' : category.replace(/-/g, ' ').toLowerCase();
+
+    const normalizedCategories = categories.map(c => c.toLowerCase());
+
+    const categoryExists =
+      normalizedCategory === 'all' ||
+      normalizedCategories.includes(normalizedCategory);
+
+    if (!categoryExists) {
       navigate('/');
       return;
     }
-    
-    setTimeout(() => {
-      const categoryProducts = getProductsByCategory(
-        category === 'all' ? 'all' : category.replace(/-/g, ' ')
-      );
-      setProducts(categoryProducts);
-      setLoading(false);
-    }, 300);
+
+    const actualCategory =
+      normalizedCategory === 'all'
+        ? 'all'
+        : categories.find(
+            c => c.toLowerCase() === normalizedCategory
+          );
+
+    const categoryProducts = getProductsByCategory(actualCategory);
+
+    setProducts(categoryProducts);
+    setLoading(false);
   }, [category, categories, getProductsByCategory, navigate]);
+
 
   // Sort products
   const sortedProducts = React.useMemo(() => {
@@ -133,8 +147,8 @@ const CategoryPage = () => {
               {sortedProducts.map(product => {
                 const lowestPrice = Math.min(...product.variants.map(v => v.price));
                 
-                return (
-                  <div key={product.id} className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+          return (
+            <div key={product._id} className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-start space-x-4">
                       <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
                         <div className="text-3xl">🌱</div>

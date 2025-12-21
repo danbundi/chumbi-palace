@@ -87,7 +87,7 @@ const CartSummary = ({ cart, total, onCheckout }) => {
         className={`w-full py-4 rounded-xl font-semibold text-lg flex items-center justify-center transition-all ${
           cart.length === 0
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:shadow-lg hover:scale-[1.02]'
+              : 'bg-linear-to-r from-green-600 to-emerald-600 text-white hover:shadow-lg hover:scale-[1.02]'
         }`}
       >
         Proceed to Checkout

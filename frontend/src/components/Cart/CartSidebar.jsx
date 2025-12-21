@@ -63,7 +63,7 @@ const CartSidebar = () => {
               {cart.map(item => (
                 <div key={item.id} className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   {/* Product Image - CORRECTLY STYLED */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-50 to-emerald-100 rounded-lg flex items-center justify-center overflow-hidden">
+                  <div className="w-16 h-16 bg-linear-to-br from-green-50 to-emerald-100 rounded-lg flex items-center justify-center overflow-hidden">
                     {item.image ? (
                       <img 
                         src={item.image} 
