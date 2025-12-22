@@ -3,14 +3,17 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ProductProvider } from './contexts/ProductContext';
 import { HotSaleProvider } from './contexts/HotSaleContext';
 import { CartProvider } from './contexts/CartContext';
-import Header from './components/Layout/Header';
-import Footer from './components/Layout/Footer';
+import MainLayout from './layout/MainLayout';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import CategoryPage from './pages/CategoryPage';
 import HotSalePage from './pages/HotSalePage';
 import ScrollToTop from './components/Layout/ScrollToTop';
+import AdminDashboard from './admin/AdminDashboard';
+import AdminLogin from './admin/AdminLogin';
+import AdminRoute from './routes/AdminRoute';
+import AdminSetup from './admin/AdminSetup';
 import './App.css';
 
 function App() {
@@ -20,19 +23,21 @@ function App() {
         <HotSaleProvider>
           <CartProvider>
             <ScrollToTop/>
-            <div className="min-h-screen flex flex-col">
-              <Header />
-              <main className="grow">
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/product/:id" element={<ProductPage />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/category/:category" element={<CategoryPage />} />
-                  <Route path="/hot-sale" element={<HotSalePage />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
+            <Routes>
+              {/* Public routes with header/footer */}
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/category/:category" element={<CategoryPage />} />
+                <Route path="/hot-sale" element={<HotSalePage />} />
+              </Route>
+
+              {/* Admin routes without header/footer */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/setup" element={<AdminSetup />} />
+              <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            </Routes>
           </CartProvider>
         </HotSaleProvider>
       </ProductProvider>

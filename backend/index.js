@@ -5,6 +5,8 @@ import productRoutes from './src/routes/product.routes.js';
 import hotsaleRoutes from './src/routes/hotsale.routes.js';
 import cors from 'cors';
 import connectDB from './src/config/db.js';
+import adminRoutes from './src/routes/admin.routes.js'
+import { getMpesaToken } from "./src/config/mpesa.js";
 
 await connectDB();
 
@@ -13,20 +15,18 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(express.json());
 
 app.use(cors());
 
 app.use(express.static("public"));
 app.use("/api/products", productRoutes);
 app.use("/api/hotsales", hotsaleRoutes);
+app.use("/api/admin", adminRoutes);
 
-import { getMpesaToken } from "./src/config/mpesa.js";
-
-app.use(express.json());
 
 
 app.use("/api/mpesa", router);
-
 app.use("/api/orders", orderRouter);
 
 app.get("/test-token", async (req, res) => {

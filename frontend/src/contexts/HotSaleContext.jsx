@@ -34,6 +34,8 @@ export const HotSaleProvider = ({ children }) => {
     return hotSales.find((item) => item._id === id);
   };
 
+  console.log('HotSales in Context:', hotSales);
+
   const value = {
     hotSales,
     loading,

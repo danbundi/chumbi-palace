@@ -3,21 +3,27 @@ import { Link } from 'react-router-dom';
 import { Flame, Clock, Tag, AlertCircle } from 'lucide-react';
 import Breadcrumbs from '../components/Layout/Breadcrumbs';
 import ProductGrid from '../components/Product/ProductGrid';
-import { useHotSales } from '../contexts/HotSaleContext';
+import { useHotSales } from '../contexts/HotSaleContext.jsx';
+import { useProducts } from '../contexts/ProductContext.jsx';
 
 const HotSalePage = () => {
-  const { products, loading } = useHotSales();
+  const { hotSales, loading } = useHotSales();
+  const { products } = useProducts();
   const [hotSaleProducts, setHotSaleProducts] = useState([]);
 
+  // console.log(products)
+
   useEffect(() => {
-    if (products) {
-      const hotSaleIds = hotSaleData.map(item => item.product_id);
-      const hotSaleItems = products.filter(product => 
-        hotSaleIds.includes(product._id || product.id)
+    if (hotSales) {
+      const hotSaleIds = hotSales.map(item => item.productCode);
+
+      const hotSaleItems = products.filter(product =>
+        hotSaleIds.includes(product.productCode || product.id)
       );
+
       setHotSaleProducts(hotSaleItems);
     }
-  }, [products]);
+  }, [hotSales]);
 
   return (
   <div className="min-h-screen bg-linear-to-b from-red-50 to-white">
