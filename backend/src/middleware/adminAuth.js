@@ -18,9 +18,13 @@ export const adminAuth = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid token" });
     }
 
+    console.log("DECODED TOKEN:", decoded);
+    console.log("AUTHENTICATED ADMIN:", admin.username);
+
     req.admin = admin; // Attach admin to request
     next();
   } catch (error) {
+    console.error("ADMIN AUTH ERROR:", error.message);
     return res.status(401).json({ message: "Unauthorized", error: error.message });
   }
 };

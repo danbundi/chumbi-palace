@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Tag } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import formatPrice from '../../utils/formatPrice';
+import { API_BASE_URL } from '../../api/api';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -14,73 +15,83 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-gradient-to-b from-white to-amber-50 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-amber-200 group">
   <Link to={`/product/${product._id}`}>
-        <div className="relative h-48 bg-gray-200">
+        <div className="relative h-56 bg-gradient-to-br from-amber-100 to-orange-100">
           {/* Product Image - replace with actual images */}
-          <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-lg">
+          <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-t-2xl">
             {product.image ? (
               <img 
-                src={product.image} 
+                src={`${API_BASE_URL}/public/${product.image}`} 
                 alt={product.name}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
             ) : (
-              <div className="text-gray-400 text-center p-4">
-                <div className="text-6xl mb-4">🌱</div>
-                <p className="text-gray-500 font-medium">Product Image</p>
-                <p className="text-gray-400 text-sm mt-1">Image coming soon</p>
+              <div className="text-amber-800 text-center p-6">
+                <div className="text-8xl mb-4">🌿</div>
+                <p className="text-amber-900 font-bold text-lg">African Natural</p>
+                <p className="text-amber-700 text-sm mt-1">Pure & Authentic</p>
               </div>
             )}
           </div>
           
           {/* Hot Sale Badge */}
           {product.tags?.includes('hot-sale') && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center">
-              <Tag size={12} className="mr-1" />
+            <div className="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center shadow-lg">
+              <Tag size={14} className="mr-2" />
               HOT SALE
+            </div>
+          )}
+
+          {/* Organic/New Badge */}
+          {product.tags?.includes('organic') && (
+            <div className="absolute top-4 right-4 bg-gradient-to-r from-emerald-700 to-green-800 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+              ORGANIC
             </div>
           )}
         </div>
         
-        <div className="p-4">
-          <h3 className="font-semibold text-lg mb-2 text-gray-800 line-clamp-1">
+        <div className="p-6">
+          <h3 className="font-bold text-xl mb-3 text-stone-900 line-clamp-1 group-hover:text-amber-800 transition-colors">
             {product.name}
           </h3>
           
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+          <p className="text-stone-700 text-sm mb-4 line-clamp-2 leading-relaxed">
             {product.short_description}
           </p>
           
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <span className="text-xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-amber-900">
                 {formatPrice(lowestPrice)} KES
               </span>
-              <span className="text-gray-500 text-sm ml-2">
+              <span className="text-stone-600 text-sm ml-3 font-medium">
                 from {product.variants[0].weight}
               </span>
             </div>
             
             <button
               onClick={handleAddToCart}
-              className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-full transition-colors"
+              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white p-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
               aria-label={`Add ${product.name} to cart`}
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={22} />
             </button>
           </div>
           
-          <div className="mt-3 flex flex-wrap gap-1">
+          <div className="mt-4 flex flex-wrap gap-2">
             {product.tags?.slice(0, 3).map(tag => (
               <span 
                 key={tag} 
-                className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs"
+                className="bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-medium border border-amber-300"
               >
                 {tag}
               </span>
             ))}
           </div>
+
+          {/* Bottom decorative line */}
+          <div className="mt-6 h-1 w-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mx-auto group-hover:w-24 transition-all duration-300"></div>
         </div>
       </Link>
     </div>

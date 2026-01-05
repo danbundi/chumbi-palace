@@ -7,6 +7,8 @@ import cors from 'cors';
 import connectDB from './src/config/db.js';
 import adminRoutes from './src/routes/admin.routes.js'
 import { getMpesaToken } from "./src/config/mpesa.js";
+import blogRoutes from "./src/routes/blog.routes.js";
+import path from "path";
 
 await connectDB();
 
@@ -24,7 +26,9 @@ app.use("/api/products", productRoutes);
 app.use("/api/hotsales", hotsaleRoutes);
 app.use("/api/admin", adminRoutes);
 
-
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/public", express.static(path.join(process.cwd(), "public")));
+app.use("/api/blogs", blogRoutes);
 
 app.use("/api/mpesa", router);
 app.use("/api/orders", orderRouter);

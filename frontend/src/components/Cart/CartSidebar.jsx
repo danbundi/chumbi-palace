@@ -3,6 +3,7 @@ import { X, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import formatPrice from '../../utils/formatPrice';
+import { API_BASE_URL } from '../../api/api';
 
 const CartSidebar = () => {
   // ✅ Keep useCart hook at the top level of component
@@ -66,7 +67,7 @@ const CartSidebar = () => {
                   <div className="w-16 h-16 bg-linear-to-br from-green-50 to-emerald-100 rounded-lg flex items-center justify-center overflow-hidden">
                     {item.image ? (
                       <img 
-                        src={item.image} 
+                        src={`${API_BASE_URL}/public/${item.image}`} 
                         alt={item.productName} 
                         className="w-full h-full object-cover"
                       />

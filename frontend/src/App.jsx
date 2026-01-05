@@ -14,6 +14,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import AdminLogin from './admin/AdminLogin';
 import AdminRoute from './routes/AdminRoute';
 import AdminSetup from './admin/AdminSetup';
+import BlogsPage from './pages/BlogsPage';
 import './App.css';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/category/:category" element={<CategoryPage />} />
                 <Route path="/hot-sale" element={<HotSalePage />} />
+                <Route path="/blogs" element={<BlogsPage />} />
               </Route>
 
               {/* Admin routes without header/footer */}
