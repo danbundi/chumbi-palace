@@ -28,8 +28,8 @@ router.post(
         content,
         image: req.file
           ? req.file.path
-              .replace(/\\/g, "/")   // Windows fix
-              .replace(/^\/+/, "")   // remove leading slash
+              .replace(/\\/g, "/")
+              .replace(/^\/+/, "")
           : null,
       });
 

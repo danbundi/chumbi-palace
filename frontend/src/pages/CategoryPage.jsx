@@ -81,54 +81,54 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Breadcrumbs />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {/* Category Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 capitalize">
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-black mb-1 capitalize">
             {categoryName}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm">
             {products.length} products found
           </p>
         </div>
 
         {/* Filters and Controls */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             {/* View Toggle */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-green-100 text-green-600' : 'text-gray-500 hover:bg-gray-100'}`}
+                className={`p-2 rounded ${viewMode === 'grid' ? 'bg-pink-100 text-pink-600' : 'text-gray-500 hover:bg-gray-100'}`}
               >
-                <Grid size={20} />
+                <Grid size={18} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-green-100 text-green-600' : 'text-gray-500 hover:bg-gray-100'}`}
+                className={`p-2 rounded ${viewMode === 'list' ? 'bg-pink-100 text-pink-600' : 'text-gray-500 hover:bg-gray-100'}`}
               >
-                <List size={20} />
+                <List size={18} />
               </button>
             </div>
 
             {/* Sort Dropdown */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Filter size={18} className="text-gray-500" />
-                <span className="text-gray-700">Sort by:</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Filter size={16} className="text-gray-500" />
+                <span className="text-gray-700 text-sm">Sort by:</span>
               </div>
               <div className="relative">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
                 >
                   <option value="default">Default</option>
                   <option value="name">Name (A-Z)</option>
                   <option value="price-low">Price (Low to High)</option>
                   <option value="price-high">Price (High to Low)</option>
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <ChevronDown size={14} className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
             </div>
           </div>
@@ -148,20 +148,20 @@ const CategoryPage = () => {
                 const lowestPrice = Math.min(...product.variants.map(v => v.price));
                 
           return (
-            <div key={product._id} className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <div className="text-3xl">🌱</div>
+            <div key={product._id} className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+                    <div className="flex items-start gap-4">
+                      <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                        <div className="text-2xl">🌱</div>
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg text-gray-900">{product.name}</h3>
-                        <p className="text-gray-600 text-sm mt-1">{product.short_description}</p>
+                        <h3 className="font-medium text-black">{product.name}</h3>
+                        <p className="text-gray-600 text-sm mt-1 line-clamp-2">{product.short_description}</p>
                         <div className="flex items-center justify-between mt-4">
                           <div>
-                            <span className="text-xl font-bold text-gray-900">{lowestPrice} KES</span>
+                            <span className="text-lg font-bold text-black">{lowestPrice} KES</span>
                             <span className="text-gray-500 text-sm ml-2">from {product.variants[0].weight}</span>
                           </div>
-                          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                          <button className="bg-pink-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-pink-700 transition-colors">
                             Add to Cart
                           </button>
                         </div>

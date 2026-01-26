@@ -7,11 +7,11 @@ const Breadcrumbs = () => {
   const pathnames = location.pathname.split('/').filter(x => x);
 
   return (
-    <nav className="py-4 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <ol className="flex items-center space-x-2 text-sm">
+    <nav className="py-3 border-b border-gray-200 bg-white">
+      <ol className="flex items-center gap-2 text-sm px-4 sm:px-6">
         <li>
-          <Link to="/" className="text-gray-500 hover:text-gray-700 flex items-center">
-            <Home size={16} className="mr-1" />
+          <Link to="/" className="text-gray-500 hover:text-black flex items-center gap-1">
+            <Home size={14} />
             Home
           </Link>
         </li>
@@ -23,13 +23,13 @@ const Breadcrumbs = () => {
 
           return (
             <li key={name} className="flex items-center">
-              <ChevronRight size={16} className="text-gray-400" />
+              <ChevronRight size={14} className="text-gray-400" />
               {isLast ? (
-                <span className="ml-2 text-gray-900 font-medium">{displayName}</span>
+                <span className="ml-2 text-black font-medium">{displayName}</span>
               ) : (
                 <Link 
                   to={routeTo} 
-                  className="ml-2 text-gray-500 hover:text-gray-700"
+                  className="ml-2 text-gray-500 hover:text-black"
                 >
                   {displayName}
                 </Link>

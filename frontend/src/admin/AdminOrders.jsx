@@ -15,37 +15,49 @@ export default function AdminOrders() {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Orders</h2>
+    <div className="bg-white p-6 rounded-lg border border-gray-200">
+      <h2 className="text-2xl font-bold text-black mb-6">Orders</h2>
 
-      {orders.map(order => (
-        <div key={order._id} className="border-b py-4 space-y-2">
-          <p><strong>Total:</strong> KES {order.totalAmount}</p>
-          <p><strong>Status:</strong> {order.status}</p>
-
-          {/* ITEMS */}
-          <div className="mt-2">
-            <p className="font-semibold">Items:</p>
-
-            {order.items.map((item, index) => (
-              <div
-                key={index}
-                className="ml-4 text-sm text-gray-700"
-              >
-                <p>
-                  • SKU: <strong>{item.variant?.sku}</strong>
-                </p>
-                <p>
-                  {item.name} ({item.variant?.name}) × {item.quantity}
-                </p>
-                <p>
-                  Subtotal: KES {item.subtotal}
-                </p>
+      <div className="space-y-6">
+        {orders.map(order => (
+          <div key={order._id} className="p-5 border border-gray-300 rounded-xl">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <div className="text-2xl font-bold text-black">KES {order.totalAmount}</div>
+                <div className="text-gray-500 text-sm mt-1">
+                  Order #{order._id.substring(0, 8)}
+                </div>
               </div>
-            ))}
+              <div className={`px-4 py-1.5 rounded-full text-sm font-medium ${
+                order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
+                {order.status}
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <div className="text-gray-700 font-medium mb-3">Items:</div>
+              
+              {order.items.map((item, index) => (
+                <div key={index} className="mb-3 last:mb-0">
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="font-medium">{item.name}</div>
+                      <div className="text-gray-600 text-sm">
+                        SKU: {item.variant?.sku} • {item.variant?.name} × {item.quantity}
+                      </div>
+                    </div>
+                    <div className="text-pink-600 font-medium">
+                      KES {item.subtotal}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

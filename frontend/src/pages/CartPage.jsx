@@ -237,10 +237,7 @@ const CartPage = () => {
             <div className="mt-8 bg-linear-to-r from-green-50 to-emerald-50 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 mb-3">✨ Shopping Tips</h3>
               <ul className="space-y-2 text-gray-600">
-                <li>• Orders over 2,000 KES qualify for FREE shipping</li>
-                <li>• Mix and match products to reach free shipping threshold</li>
                 <li>• Check out our Hot Sale section for amazing deals</li>
-                <li>• All prices include 16% VAT as per Kenyan regulations</li>
               </ul>
             </div>
           </div>
