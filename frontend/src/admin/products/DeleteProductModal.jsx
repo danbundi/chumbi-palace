@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE_URL } from "../../config/api";
+import { api } from "../../config/api";
 
 export default function DeleteProductModal({
   product,
@@ -11,7 +11,7 @@ export default function DeleteProductModal({
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${API_BASE_URL}/api/admin/products/${product._id}`,
+        `${api}/api/admin/products/${product._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

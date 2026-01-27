@@ -17,9 +17,9 @@ export default function AdminHome() {
         const headers = { Authorization: `Bearer ${token}` };
 
         const [p, o, t] = await Promise.all([
-          axios.get("http://localhost:5000/api/admin/products", { headers }),
-          axios.get("http://localhost:5000/api/admin/orders", { headers }),
-          axios.get("http://localhost:5000/api/admin/transactions", { headers }),
+          axios.get("api/api/admin/products", { headers }),
+          axios.get("api/api/admin/orders", { headers }),
+          axios.get("api/api/admin/transactions", { headers }),
         ]);
 
         setStats({

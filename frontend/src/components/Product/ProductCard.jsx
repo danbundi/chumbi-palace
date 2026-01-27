@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Tag } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import formatPrice from '../../utils/formatPrice';
-import { API_BASE_URL } from '../../api/api';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -22,7 +21,7 @@ const ProductCard = ({ product }) => {
           <div className="w-full h-full flex items-center justify-center overflow-hidden">
             {product.image ? (
               <img 
-                src={`${API_BASE_URL}/public/${product.image}`} 
+                src={`/public/${product.image}`} 
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />

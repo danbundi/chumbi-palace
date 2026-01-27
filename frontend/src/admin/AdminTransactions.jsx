@@ -14,7 +14,7 @@ export default function AdminTransactions() {
   const fetchTransactions = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/transactions",
+        "api/api/admin/transactions",
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -80,7 +80,7 @@ export default function AddProductModal({ onClose, onSuccess }) {
       }
 
       await axios.post(
-        "http://localhost:5000/api/admin/products",
+        "api/api/admin/products",
         data,
         {
           headers: {

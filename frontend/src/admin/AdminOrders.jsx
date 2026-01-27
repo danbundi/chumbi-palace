@@ -7,7 +7,7 @@ export default function AdminOrders() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/admin/orders", {
+      .get("api/api/admin/orders", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => setOrders(res.data))

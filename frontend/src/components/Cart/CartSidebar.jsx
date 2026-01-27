@@ -3,7 +3,6 @@ import { X, ShoppingBag, Trash2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import formatPrice from '../../utils/formatPrice';
-import { API_BASE_URL } from '../../api/api';
 
 const CartSidebar = () => {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getCartCount, setIsCartOpen } = useCart();
@@ -68,7 +67,7 @@ const CartSidebar = () => {
                   <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200">
                     {item.image ? (
                       <img 
-                        src={`${API_BASE_URL}/public/${item.image}`} 
+                        src={`/public/${item.image}`} 
                         alt={item.productName} 
                         className="w-full h-full object-cover"
                       />

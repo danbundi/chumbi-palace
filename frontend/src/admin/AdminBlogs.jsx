@@ -21,7 +21,7 @@ export default function AdminBlogs() {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/blogs");
+      const res = await axios.get("api/api/blogs");
       setBlogs(res.data);
     } catch (err) {
       console.error("Failed to fetch blogs", err);
@@ -34,7 +34,7 @@ export default function AdminBlogs() {
     if (!window.confirm("Delete this blog permanently?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
+      await axios.delete(`api/api/blogs/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ export default function AdminBlogs() {
       console.log("Submitting blog:", form);
       console.log(token)
       const res = await axios.post(
-        "http://localhost:5000/api/blogs",
+        "api/api/blogs",
         data,
         {
           headers: {
@@ -156,7 +156,7 @@ export default function AdminBlogs() {
               <div className="md:w-32 flex-shrink-0">
                 <div className="w-full h-40 md:h-28 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                   <img
-                    src={`http://localhost:5000${blog.image}`}
+                    src={`api${blog.image}`}
                     alt={blog.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {

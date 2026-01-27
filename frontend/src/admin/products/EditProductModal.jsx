@@ -27,7 +27,7 @@ export default function EditProductModal({ product, onClose, onSuccess }) {
     if (image) formData.append("image", image);
 
     await axios.put(
-      `http://localhost:5000/api/admin/products/${product._id}`,
+      `api/api/admin/products/${product._id}`,
       formData,
       { headers: { Authorization: `Bearer ${token}` } }
     );

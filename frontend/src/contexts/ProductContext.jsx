@@ -19,7 +19,7 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products'); // backend endpoint
+        const res = await fetch('/api/products'); // backend endpoint
         const data = await res.json();
 
         // Normalize products to ensure a Mongo-style `_id` exists.

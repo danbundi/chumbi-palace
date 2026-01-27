@@ -6,7 +6,6 @@ import RelatedProducts from '../components/Product/RelatedProducts';
 import { useProducts } from '../contexts/ProductContext';
 import { useCart } from '../contexts/CartContext';
 import formatPrice from '../utils/formatPrice';
-import { API_BASE_URL } from '../api/api';
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -65,7 +64,7 @@ const ProductPage = () => {
               <div className="bg-gray-100 rounded-lg h-80 flex items-center justify-center mb-6 overflow-hidden border border-gray-200">
                 {product.image ? (
                   <img 
-                    src={`${API_BASE_URL}/public/${product.image}`} 
+                    src={`/public/${product.image}`} 
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />

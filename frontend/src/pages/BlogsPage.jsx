@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../api/api";
 import BlogModal from "../components/Blogs/BlogModal";
 
 export default function BlogsPage() {
@@ -11,7 +10,7 @@ export default function BlogsPage() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/blogs`);
+        const res = await axios.get(`${api}/api/blogs`);
         setBlogs(res.data);
       } catch (err) {
         console.error("Failed to fetch blogs", err);
@@ -57,7 +56,7 @@ export default function BlogsPage() {
               {/* Image */}
               <div className="h-48 bg-gray-100 overflow-hidden">
                 <img
-                  src={`${API_BASE_URL}${blog.image}`}
+                  src={`/api${blog.image}`}
                   alt={blog.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />

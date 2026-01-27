@@ -1,5 +1,4 @@
 // components/BlogModal.jsx
-import { API_BASE_URL } from "../../api/api";
 
 export default function BlogModal({ blog, onClose }) {
   if (!blog) return null;
@@ -19,7 +18,7 @@ export default function BlogModal({ blog, onClose }) {
         {/* Image */}
         <div className="w-full h-64 bg-gray-100 overflow-hidden">
           <img
-            src={`${API_BASE_URL}${blog.image}`}
+            src={`/api${blog.image}`}
             alt={blog.title}
             className="w-full h-full object-cover"
           />

@@ -3,7 +3,6 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useProducts } from '../../contexts/ProductContext';
 import formatPrice from '../../utils/formatPrice';
-import { API_BASE_URL } from '../../api/api';
 
 const CartItem = ({ item }) => {
   const { removeFromCart, updateQuantity } = useCart();
@@ -37,7 +36,7 @@ const CartItem = ({ item }) => {
         <div className="shrink-0">
           {product.image ? (
             <img 
-              src={`${API_BASE_URL}/public/${product.image}`} 
+              src={`/public/${product.image}`} 
               alt={product.name}
               className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover border border-gray-200"
             />

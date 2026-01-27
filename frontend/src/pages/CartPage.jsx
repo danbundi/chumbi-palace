@@ -50,7 +50,7 @@ const CartPage = () => {
       };
 
       // Step 2: Save order to database
-      const orderResponse = await fetch('http://localhost:5000/api/orders/create', {
+      const orderResponse = await fetch('api/api/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ const CartPage = () => {
       };
 
       // Step 4: Initiate M-Pesa STK Push
-      const paymentResponse = await fetch('http://localhost:5000/api/mpesa/stk-push', {
+      const paymentResponse = await fetch('api/api/mpesa/stk-push', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ const CartPage = () => {
     try {
       checkoutRequestID.trim()
       const response = await fetch(
-        `http://localhost:5000/api/mpesa/status/${checkoutRequestID}`
+        `api/api/mpesa/status/${checkoutRequestID}`
       );
 
       const data = await response.json();

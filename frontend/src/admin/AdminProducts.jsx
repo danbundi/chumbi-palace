@@ -13,7 +13,7 @@ export default function AdminProducts() {
 
   const fetchProducts = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/admin/products",
+      "api/api/admin/products",
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setProducts(res.data);
@@ -23,7 +23,7 @@ export default function AdminProducts() {
     if (!window.confirm("Delete this product?")) return;
 
     await axios.delete(
-      `http://localhost:5000/api/admin/products/${id}`,
+      `api/api/admin/products/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
