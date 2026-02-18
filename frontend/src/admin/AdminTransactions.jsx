@@ -14,7 +14,7 @@ export default function AdminTransactions() {
   const fetchTransactions = async () => {
     try {
       const res = await axios.get(
-        "api/api/admin/transactions",
+        `${import.meta.env.VITE_API_URL}/api/admin/transactions`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

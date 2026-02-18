@@ -19,11 +19,11 @@ export const ProductProvider = ({ children }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('/api/products'); // backend endpoint
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/products`
+        ); // backend endpoint
         const data = await res.json();
 
-        // Normalize products to ensure a Mongo-style `_id` exists.
-        // Some fixtures or older data may use `id` instead of `_id`.
         const normalized = data.map(p => ({ ...p, _id: p._id || p.id }));
 
         setProducts(normalized);

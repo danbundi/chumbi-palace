@@ -10,7 +10,7 @@ export default function BlogsPage() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(`${api}/api/blogs`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/blogs`);
         setBlogs(res.data);
       } catch (err) {
         console.error("Failed to fetch blogs", err);
@@ -56,7 +56,7 @@ export default function BlogsPage() {
               {/* Image */}
               <div className="h-48 bg-gray-100 overflow-hidden">
                 <img
-                  src={`/api${blog.image}`}
+                  src={`${import.meta.env.VITE_API_URL}${blog.image}`}
                   alt={blog.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />

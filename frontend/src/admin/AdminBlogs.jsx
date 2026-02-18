@@ -21,7 +21,7 @@ export default function AdminBlogs() {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("api/api/blogs");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/blogs`);
       setBlogs(res.data);
     } catch (err) {
       console.error("Failed to fetch blogs", err);
@@ -34,7 +34,7 @@ export default function AdminBlogs() {
     if (!window.confirm("Delete this blog permanently?")) return;
 
     try {
-      await axios.delete(`api/api/blogs/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/blogs/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ export default function AdminBlogs() {
       console.log("Submitting blog:", form);
       console.log(token)
       const res = await axios.post(
-        "api/api/blogs",
+        `${import.meta.env.VITE_API_URL}/api/blogs`,
         data,
         {
           headers: {
@@ -156,7 +156,7 @@ export default function AdminBlogs() {
               <div className="md:w-32 flex-shrink-0">
                 <div className="w-full h-40 md:h-28 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                   <img
-                    src={`api${blog.image}`}
+                    src={`${import.meta.env.VITE_API_URL}${blog.image}`}
                     alt={blog.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -212,7 +212,7 @@ export default function AdminBlogs() {
               </div>
 
               <div className="flex flex-row md:flex-col gap-2 pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
-                <button className="px-4 py-2 text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50 rounded-lg transition-colors flex items-center gap-2">
+                {/* <button className="px-4 py-2 text-sm font-medium text-pink-600 hover:text-pink-700 hover:bg-pink-50 rounded-lg transition-colors flex items-center gap-2">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     className="h-4 w-4" 
@@ -228,7 +228,7 @@ export default function AdminBlogs() {
                     />
                   </svg>
                   Edit
-                </button>
+                </button> */}
                 <button
                   onClick={() => deleteBlog(blog._id)}
                   className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-red-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2"

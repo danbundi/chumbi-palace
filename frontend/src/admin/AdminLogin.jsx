@@ -16,6 +16,7 @@ export default function AdminLogin() {
       navigate("/admin/dashboard");
     } catch (error) {
       alert(error.response?.data?.message || "Login failed");
+      console.error("Login error:", error);
     }
   };
 

@@ -7,7 +7,7 @@ export default function AdminOrders() {
 
   useEffect(() => {
     axios
-      .get("api/api/admin/orders", {
+      .get(`${import.meta.env.VITE_API_URL}/api/admin/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => setOrders(res.data))

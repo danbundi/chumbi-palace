@@ -17,7 +17,7 @@ export const HotSaleProvider = ({ children }) => {
   useEffect(() => {
     const fetchHotSales = async () => {
       try {
-        const res = await fetch("/api/hotsales");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/hotsales`);
         const data = await res.json();
         setHotSales(data);
       } catch (error) {
