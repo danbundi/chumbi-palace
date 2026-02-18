@@ -67,7 +67,7 @@ const CartSidebar = () => {
                   <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200">
                     {item.image ? (
                       <img 
-                        src={`/public/${item.image}`} 
+                        src={`${import.meta.env.VITE_API_URL}/public/${item.image}`} 
                         alt={item.productName} 
                         className="w-full h-full object-cover"
                       />

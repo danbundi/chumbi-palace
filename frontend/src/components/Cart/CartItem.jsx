@@ -36,7 +36,7 @@ const CartItem = ({ item }) => {
         <div className="shrink-0">
           {product.image ? (
             <img 
-              src={`/public/${product.image}`} 
+              src={`${import.meta.env.VITE_API_URL}/public/${product.image}`} 
               alt={product.name}
               className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover border border-gray-200"
             />

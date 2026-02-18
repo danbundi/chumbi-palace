@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
           <div className="w-full h-full flex items-center justify-center overflow-hidden">
             {product.image ? (
               <img 
-                src={`/public/${product.image}`} 
+                src={`${import.meta.env.VITE_API_URL}/public/${product.image}`} 
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
